@@ -14,8 +14,20 @@ namespace kriptografi.Services
             {
                 using (Aes aes = Aes.Create())
                 {
-                    aes.Key = Encoding.UTF8.GetBytes(_key);
-                    aes.IV = Encoding.UTF8.GetBytes(_iv);
+                    
+                    byte[] keyBytes = new byte[32]; 
+                    byte[] ivBytes = new byte[16]; 
+                    
+                    
+                    byte[] tempKey = Encoding.UTF8.GetBytes(_key);
+                    Array.Copy(tempKey, keyBytes, Math.Min(tempKey.Length, 32));
+                    
+                    
+                    byte[] tempIV = Encoding.UTF8.GetBytes(_iv);
+                    Array.Copy(tempIV, ivBytes, Math.Min(tempIV.Length, 16));
+
+                    aes.Key = keyBytes;
+                    aes.IV = ivBytes;
 
                     ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
@@ -43,8 +55,20 @@ namespace kriptografi.Services
             {
                 using (Aes aes = Aes.Create())
                 {
-                    aes.Key = Encoding.UTF8.GetBytes(_key);
-                    aes.IV = Encoding.UTF8.GetBytes(_iv);
+                    // Key ve IV'yi doğru boyutlara getir
+                    byte[] keyBytes = new byte[32]; // 256 bit
+                    byte[] ivBytes = new byte[16];  // 128 bit
+                    
+                    // Key'i 32 byte'a tamamla
+                    byte[] tempKey = Encoding.UTF8.GetBytes(_key);
+                    Array.Copy(tempKey, keyBytes, Math.Min(tempKey.Length, 32));
+                    
+                    // IV'yi 16 byte'a tamamla
+                    byte[] tempIV = Encoding.UTF8.GetBytes(_iv);
+                    Array.Copy(tempIV, ivBytes, Math.Min(tempIV.Length, 16));
+
+                    aes.Key = keyBytes;
+                    aes.IV = ivBytes;
 
                     ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
